@@ -23,10 +23,18 @@ const i2c0 = i2c.instance.num(0);
 pub fn main() !void {
     pin_config.apply();
 
+    const sda_pin = gpio.num(0);
+    const scl_pin = gpio.num(1);
+    inline for (&.{ scl_pin, sda_pin }) |pin| {
+        pin.set_slew_rate(.slow);
+        pin.set_schmitt_trigger(.enabled);
+        pin.set_function(.i2c);
+    }
+
     i2c0.apply(.{
         .clock_config = rp2040.clock_config,
     }) catch {
-        pins.led.put(0);
+        pins.led.put(1);
     };
 
     const a: i2c.Address = @enumFromInt(0x3C);
@@ -34,18 +42,6 @@ pub fn main() !void {
         pins.led.put(1);
     };
 }
-// Todo:
-// 1. Slave address bit: 0  1 1 1 1 0 SA0 R/W# ---> 0x3C for write | 0x3D for read
-// 2. ACK
-// 3. Control byte: C0 D/C# 0 0 0 0 0 0 ---> 0x80 control byte | 0x40 next byte saved to GDDRAM
-// 4. ACK
-// 5. Control byte: ...
-// 6. ACK
-// 7. ...
-// 8 STOP
-//
-// Turn OLED Display On in normal mode: 0xAF
-// Sleep mode: 0xAE
-// To turn display on: 0xA5
-//
-//
+
+// https://nnarain.github.io/2020/12/01/SSD1306-OLED-Display-Driver-using-I2C.html
+// https://andrewconl.in/blog/2024/microzig-display-driver/
