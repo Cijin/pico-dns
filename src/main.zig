@@ -16,6 +16,9 @@ const pins = pin_config.pins();
 
 const CONTROL_COMMAND = 0x00;
 const CONTROL_DATA = 0x40;
+const COMMAND_ADDRESSING_MODE = 0x20;
+const COMMAND_COLUMN_ADDRESS = 0x21;
+const COMMAND_PAGE_ADDRESS = 0x22;
 const init = [_]u8{ CONTROL_COMMAND, 0xAE, CONTROL_COMMAND, 0xA8, 0x1F, CONTROL_COMMAND, 0xD3, 0x00, CONTROL_COMMAND, 0x40, CONTROL_COMMAND, 0xA0, CONTROL_COMMAND, 0xC0, CONTROL_COMMAND, 0xDA, 0x02, CONTROL_COMMAND, 0x81, 0x7F, CONTROL_COMMAND, 0xA4, CONTROL_COMMAND, 0xD5, 0x80, CONTROL_COMMAND, 0x8D, 0x14, CONTROL_COMMAND, 0xAF };
 
 const i2c0 = i2c.instance.num(0);
@@ -38,10 +41,42 @@ pub fn main() !void {
     };
 
     const a: i2c.Address = @enumFromInt(0x3C);
+
     i2c0.write_blocking(a, &init, time.Duration.from_ms(500)) catch {
         pins.led.put(1);
     };
-}
 
-// https://nnarain.github.io/2020/12/01/SSD1306-OLED-Display-Driver-using-I2C.html
-// https://andrewconl.in/blog/2024/microzig-display-driver/
+    const addressingMode = [3]u8{ CONTROL_COMMAND, COMMAND_ADDRESSING_MODE, 0x00 };
+    i2c0.write_blocking(a, &addressingMode, time.Duration.from_ms(500)) catch {
+        pins.led.put(1);
+    };
+
+    const columnAddress = [_]u8{
+        CONTROL_COMMAND,
+        COMMAND_COLUMN_ADDRESS,
+        0x00,
+        0x7F,
+        COMMAND_PAGE_ADDRESS,
+        0x00,
+        0x03,
+    };
+    i2c0.write_blocking(a, &columnAddress, time.Duration.from_ms(500)) catch {
+        pins.led.put(1);
+    };
+
+    var buf: [512]u8 = .{0x00} ** 512;
+    for (0..buf.len) |i| {
+        var data = [2]u8{ CONTROL_DATA, buf[i] };
+        i2c0.write_blocking(a, &data, time.Duration.from_ms(500)) catch {
+            pins.led.put(1);
+        };
+    }
+
+    buf = .{0x01} ** 512;
+    for (0..buf.len) |i| {
+        var data = [2]u8{ CONTROL_DATA, buf[i] };
+        i2c0.write_blocking(a, &data, time.Duration.from_ms(500)) catch {
+            pins.led.put(1);
+        };
+    }
+}
