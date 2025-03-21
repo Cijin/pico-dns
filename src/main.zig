@@ -72,7 +72,7 @@ pub fn main() !void {
         };
     }
 
-    buf = .{0x01} ** 512;
+    buf = .{0xFF} ** 512;
     for (0..buf.len) |i| {
         var data = [2]u8{ CONTROL_DATA, buf[i] };
         i2c0.write_blocking(a, &data, time.Duration.from_ms(500)) catch {
