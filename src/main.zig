@@ -37,12 +37,11 @@ pub fn main() !void {
         pins.led.put(1);
     };
 
-    // Font stuff here
-
-    const buf: [512]u8 = .{0xFF} ** 512;
+    // Todo: Font stuff here
     // instead of writing 0xFF, get input from somewhere
     // turn it into font data (not sure how yet)
     // and then just write it to the display
+    const buf: [512]u8 = .{0xFF} ** 512;
     var r_idx: usize = 0;
     _ = &r_idx;
     ssd1306.write_data(i2c0, buf[r_idx..buf.len]) catch {
