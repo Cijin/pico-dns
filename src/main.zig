@@ -41,7 +41,22 @@ pub fn main() !void {
     // instead of writing 0xFF, get input from somewhere
     // turn it into font data (not sure how yet)
     // and then just write it to the display
-    const buf: [512]u8 = .{0xFF} ** 512;
+    const a = [_]u8{
+        0x00,
+        0x20,
+        0x50,
+        0x88,
+        0x88,
+        0xF8,
+        0x88,
+        0x88,
+        0x00,
+        0x00,
+    };
+    var buf: [512]u8 = .{0x00} ** 512;
+    for (0..buf.len) |i| {
+        buf[i] = a[i % a.len];
+    }
     var r_idx: usize = 0;
     _ = &r_idx;
     ssd1306.write_data(i2c0, buf[r_idx..buf.len]) catch {
