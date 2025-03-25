@@ -37,10 +37,6 @@ pub fn main() !void {
         pins.led.put(1);
     };
 
-    // Todo: Font stuff here
-    // instead of writing 0xFF, get input from somewhere
-    // turn it into font data (not sure how yet)
-    // and then just write it to the display
     const a = [_]u8{
         0x00,
         0x20,
@@ -54,8 +50,9 @@ pub fn main() !void {
         0x00,
     };
     var buf: [512]u8 = .{0x00} ** 512;
-    for (0..buf.len) |i| {
-        buf[i] = a[i % a.len];
+    // this gets printed but the orientation is not coorect
+    for (0..a.len) |i| {
+        buf[i] = a[i];
     }
     var r_idx: usize = 0;
     _ = &r_idx;

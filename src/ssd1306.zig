@@ -47,7 +47,8 @@ const a: i2c.Address = @enumFromInt(0x3C);
 pub fn init(pin: i2c.I2C) !void {
     try pin.write_blocking(a, &INIT_SEQUENCE, time.Duration.from_ms(500));
 
-    const addressingMode = [3]u8{ CONTROL_COMMAND, COMMAND_ADDRESSING_MODE, 0x00 };
+    // Todo: currently this is in page addressing, not sure if it's the right way
+    const addressingMode = [3]u8{ CONTROL_COMMAND, COMMAND_ADDRESSING_MODE, 0x10 };
     try pin.write_blocking(a, &addressingMode, time.Duration.from_ms(500));
 
     const column_page_address = [_]u8{
@@ -55,20 +56,30 @@ pub fn init(pin: i2c.I2C) !void {
         COMMAND_COLUMN_ADDRESS,
         0x00,
         0x7F,
+        CONTROL_COMMAND,
         COMMAND_PAGE_ADDRESS,
         0x00,
         0x03,
     };
     try pin.write_blocking(a, &column_page_address, time.Duration.from_ms(500));
 
+    // Todo: this is temporary get rid of this at some point
+    const reset_orientation = [_]u8{
+        CONTROL_COMMAND,
+        0xA1,
+        CONTROL_COMMAND,
+        0xC8,
+    };
+    try pin.write_blocking(a, &reset_orientation, time.Duration.from_ms(500));
+
     const buf: [512]u8 = .{0x00} ** 512;
     for (0..buf.len) |i| {
-        try pin.write_blocking(a, &[2]u8{ CONTROL_DATA, buf[i] }, time.Duration.from_ms(500));
+        try pin.write_blocking(a, &[2]u8{ CONTROL_DATA, buf[i] }, null);
     }
 }
 
 pub fn write_data(pin: i2c.I2C, data: []const u8) !void {
     for (0..data.len) |i| {
-        try pin.write_blocking(a, &[2]u8{ CONTROL_DATA, data[i] }, time.Duration.from_ms(500));
+        try pin.write_blocking(a, &[2]u8{ CONTROL_DATA, data[i] }, null);
     }
 }
