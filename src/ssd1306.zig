@@ -8,6 +8,8 @@ const CONTROL_DATA = 0x40;
 const COMMAND_ADDRESSING_MODE = 0x20;
 const COMMAND_COLUMN_ADDRESS = 0x21;
 const COMMAND_PAGE_ADDRESS = 0x22;
+const VERTICAL_SHIFT = 0xD3;
+const COLUMN_PIN_CONFIG = 0xDA;
 
 const INIT_SEQUENCE = [_]u8{
     CONTROL_COMMAND,
@@ -47,8 +49,7 @@ const a: i2c.Address = @enumFromInt(0x3C);
 pub fn init(pin: i2c.I2C) !void {
     try pin.write_blocking(a, &INIT_SEQUENCE, time.Duration.from_ms(500));
 
-    // Todo: currently this is in page addressing, not sure if it's the right way
-    const addressingMode = [3]u8{ CONTROL_COMMAND, COMMAND_ADDRESSING_MODE, 0x10 };
+    const addressingMode = [3]u8{ CONTROL_COMMAND, COMMAND_ADDRESSING_MODE, 0x00 };
     try pin.write_blocking(a, &addressingMode, time.Duration.from_ms(500));
 
     const column_page_address = [_]u8{

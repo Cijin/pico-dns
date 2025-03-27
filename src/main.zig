@@ -54,6 +54,9 @@ pub fn main() !void {
     for (0..a.len) |i| {
         buf[i] = a[i];
     }
+    for (a.len..a.len * 2) |i| {
+        buf[i] = a[i % a.len];
+    }
     var r_idx: usize = 0;
     _ = &r_idx;
     ssd1306.write_data(i2c0, buf[r_idx..buf.len]) catch {
