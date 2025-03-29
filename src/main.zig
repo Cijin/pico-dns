@@ -1,6 +1,8 @@
 const std = @import("std");
 const microzig = @import("microzig");
-const ssd1306 = @import("./ssd1306.zig");
+const ssd1306 = @import("ssd1306.zig");
+const font = @import("font.zig");
+const assert = std.debug.assert;
 const rp2040 = microzig.hal;
 const time = microzig.drivers.time;
 const i2c = rp2040.i2c;
@@ -16,6 +18,8 @@ const pin_config = rp2040.pins.GlobalConfiguration{
 
 const pins = pin_config.pins();
 const i2c0 = i2c.instance.num(0);
+var idx: usize = 0;
+var buf: [512]u8 = .{0x00} ** 512;
 
 pub fn main() !void {
     pin_config.apply();
@@ -37,29 +41,30 @@ pub fn main() !void {
         pins.led.put(1);
     };
 
-    const a = [_]u8{
-        0x00,
-        0x20,
-        0x50,
-        0x88,
-        0x88,
-        0xF8,
-        0x88,
-        0x88,
-        0x00,
-        0x00,
-    };
-    var buf: [512]u8 = .{0x00} ** 512;
-    // this gets printed but the orientation is not coorect
-    for (0..a.len) |i| {
-        buf[i] = a[i];
-    }
-    for (a.len..a.len * 2) |i| {
-        buf[i] = a[i % a.len];
-    }
+    const msg = "Hello World!";
+    const numbers = "0123456789";
+
+    write_string(msg);
+    write_string(numbers);
+
     var r_idx: usize = 0;
     _ = &r_idx;
     ssd1306.write_data(i2c0, buf[r_idx..buf.len]) catch {
         pins.led.put(1);
     };
+}
+
+fn write_string(str: []const u8) void {
+    var bitmap: [6]u8 = undefined;
+    for (str) |char| {
+        assert((char - font.offset) <= font.bitmap.len);
+        assert((char - font.offset) >= 0);
+        assert(str.len + idx <= buf.len);
+
+        bitmap = font.bitmap[char - font.offset];
+        for (0..bitmap.len) |i| {
+            buf[idx] = bitmap[i];
+            idx += 1;
+        }
+    }
 }
