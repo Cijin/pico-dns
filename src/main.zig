@@ -18,8 +18,6 @@ const pin_config = rp2040.pins.GlobalConfiguration{
 
 const pins = pin_config.pins();
 const i2c0 = i2c.instance.num(0);
-var idx: usize = 0;
-var buf: [512]u8 = .{0x00} ** 512;
 
 pub fn main() !void {
     pin_config.apply();
@@ -44,27 +42,31 @@ pub fn main() !void {
     const msg = "Hello World!";
     const numbers = "0123456789";
 
-    write_string(msg);
-    write_string(numbers);
-
-    var r_idx: usize = 0;
-    _ = &r_idx;
-    ssd1306.write_data(i2c0, buf[r_idx..buf.len]) catch {
+    write_line(msg) catch {
+        pins.led.put(1);
+    };
+    write_line(numbers) catch {
         pins.led.put(1);
     };
 }
 
-fn write_string(str: []const u8) void {
+fn write_line(str: []const u8) !void {
+    var buf: [128]u8 = .{0x00} ** 128;
     var bitmap: [6]u8 = undefined;
+    var idx: usize = 0;
+    assert(str.len < buf.len);
+
     for (str) |char| {
-        assert((char - font.offset) <= font.bitmap.len);
-        assert((char - font.offset) >= 0);
+        assert((char - font.asscii_offset) <= font.bitmap.len);
+        assert((char - font.asscii_offset) >= 0);
         assert(str.len + idx <= buf.len);
 
-        bitmap = font.bitmap[char - font.offset];
+        bitmap = font.bitmap[char - font.asscii_offset];
         for (0..bitmap.len) |i| {
             buf[idx] = bitmap[i];
             idx += 1;
         }
     }
+
+    try ssd1306.write_data(i2c0, buf[0..buf.len]);
 }

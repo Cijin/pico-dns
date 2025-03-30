@@ -46,12 +46,6 @@ const INIT_SEQUENCE = [_]u8{
 
 const a: i2c.Address = @enumFromInt(0x3C);
 
-// Todo:
-// 1. Switch to page adressing
-// 2. Create method to allow going to the next page
-// 3. Note: column should reset to 0 when updating page
-// 4. This is the last thing to be done, we can move on to ??
-
 pub fn init(pin: i2c.I2C) !void {
     try pin.write_blocking(a, &INIT_SEQUENCE, time.Duration.from_ms(500));
 
