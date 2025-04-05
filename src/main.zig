@@ -39,13 +39,9 @@ pub fn main() !void {
         pins.led.put(1);
     };
 
-    const msg = "Hello World!";
-    const numbers = "0123456789";
+    const msg = "netflix: 60m";
 
     write_line(msg) catch {
-        pins.led.put(1);
-    };
-    write_line(numbers) catch {
         pins.led.put(1);
     };
 }
