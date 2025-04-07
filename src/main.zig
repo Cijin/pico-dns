@@ -1,6 +1,7 @@
 const std = @import("std");
 const microzig = @import("microzig");
 const ssd1306 = @import("ssd1306.zig");
+const esp01s = @import("esp01s.zig");
 const font = @import("font.zig");
 const assert = std.debug.assert;
 const rp2040 = microzig.hal;
@@ -39,9 +40,26 @@ pub fn main() !void {
         pins.led.put(1);
     };
 
-    const msg = "netflix: 60m";
+    write_line("Display: Ok") catch {
+        pins.led.put(1);
+    };
 
-    write_line(msg) catch {
+    var buf: [128]u8 = undefined;
+    const code = esp01s.init(&buf);
+    if (code != 0) {
+        // Todo: currently returning framing error
+        const codeString = std.fmt.bufPrint(&buf, "{}", .{code}) catch {
+            pins.led.put(1);
+            return;
+        };
+
+        write_line(codeString) catch {
+            pins.led.put(1);
+            return;
+        };
+    }
+
+    write_line(&buf) catch {
         pins.led.put(1);
     };
 }
