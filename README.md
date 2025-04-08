@@ -12,3 +12,4 @@
 
 ### Check this first thing **TOMORROW**
 https://www.taydaelectronics.com/datasheets/files/ESP-01S.pdf
+https://github.com/CytronTechnologies/esp-at-binaries
