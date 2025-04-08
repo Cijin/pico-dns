@@ -9,3 +9,6 @@
 
 ### ESP-01S Specific
 * [Blog](https://www.instructables.com/Using-the-ESP8266-module/)
+
+### Check this first thing **TOMORROW**
+https://www.taydaelectronics.com/datasheets/files/ESP-01S.pdf
