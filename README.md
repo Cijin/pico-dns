@@ -13,3 +13,5 @@
 ### Check this first thing **TOMORROW**
 https://www.taydaelectronics.com/datasheets/files/ESP-01S.pdf
 https://github.com/CytronTechnologies/esp-at-binaries
+
+// according to sdk you should ground reset pin to reset and looks like normally it should be connected in parallel with power
