@@ -11,7 +11,7 @@
 * [Blog](https://www.instructables.com/Using-the-ESP8266-module/)
 
 ### Check this first thing **TOMORROW**
-[ESP-DataSheet](https://www.taydaelectronics.com/datasheets/files/ESP-01S.pdf)
-[Cytron firmware](https://github.com/CytronTechnologies/esp-at-binaries)
+* [ESP-DataSheet](https://www.taydaelectronics.com/datasheets/files/ESP-01S.pdf)
+* [Cytron firmware](https://github.com/CytronTechnologies/esp-at-binaries)
 
 // according to sdk you should ground reset pin to reset and looks like normally it should be connected in parallel with power
