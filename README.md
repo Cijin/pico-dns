@@ -15,3 +15,6 @@
 * [Cytron firmware](https://github.com/CytronTechnologies/esp-at-binaries)
 
 // according to sdk you should ground reset pin to reset and looks like normally it should be connected in parallel with power
+
+### 12 April
+* [Voltage divider](https://en.wikipedia.org/wiki/Voltage_divider)
