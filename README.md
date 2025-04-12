@@ -18,3 +18,4 @@
 
 ### 12 April
 * [Voltage divider](https://en.wikipedia.org/wiki/Voltage_divider)
+* [Pico USB to serial](https://learnembeddedsystems.co.uk/pico-usb-serial-code)
