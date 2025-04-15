@@ -5,11 +5,9 @@ const esp01s = @import("esp01s.zig");
 const font = @import("font.zig");
 const assert = std.debug.assert;
 const rp2040 = microzig.hal;
-const time = microzig.drivers.time;
 const i2c = rp2040.i2c;
 const gpio = rp2040.gpio;
 
-// Compile-time pin configuration
 const pin_config = rp2040.pins.GlobalConfiguration{
     .GPIO25 = .{
         .name = "led",
@@ -34,21 +32,23 @@ pub fn main() !void {
         .clock_config = rp2040.clock_config,
     }) catch {
         pins.led.put(1);
+        return;
     };
 
     ssd1306.init(i2c0) catch {
         pins.led.put(1);
+        return;
     };
 
     write_line("Display: Ok") catch {
         pins.led.put(1);
+        return;
     };
 
-    var buf: [128]u8 = undefined;
+    var buf: [128]u8 = .{0} ** 128;
     const code = esp01s.init(&buf);
     if (code != 0) {
-        // Todo: currently returning framing error
-        const codeString = std.fmt.bufPrint(&buf, "{}", .{code}) catch {
+        const codeString = std.fmt.bufPrint(&buf, "{d}", .{code}) catch {
             pins.led.put(1);
             return;
         };
@@ -57,9 +57,16 @@ pub fn main() !void {
             pins.led.put(1);
             return;
         };
+
+        return;
     }
 
-    write_line(&buf) catch {
+    var buf2: [128]u8 = .{0} ** 128;
+    const res = std.fmt.bufPrint(&buf2, "Res:{any}", .{buf}) catch {
+        pins.led.put(1);
+        return;
+    };
+    write_line(res) catch {
         pins.led.put(1);
     };
 }
