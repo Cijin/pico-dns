@@ -19,3 +19,6 @@
 ### 12 April
 * [Voltage divider](https://en.wikipedia.org/wiki/Voltage_divider)
 * [Pico USB to serial](https://learnembeddedsystems.co.uk/pico-usb-serial-code)
+
+### 15 April
+* [USB CDC](https://github.com/ZigEmbeddedGroup/microzig/blob/main/examples/raspberrypi/rp2xxx/src/usb_cdc.zig)
