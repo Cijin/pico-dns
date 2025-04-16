@@ -8,7 +8,7 @@ const time = rp2040.time;
 const ReceiveError = rp2040.uart.ReceiveError;
 
 const uart = rp2040.uart.instance.num(1);
-const BAUD_RATE = 115200;
+const BAUD_RATE = 74887;
 const uart_tx = gpio.num(4);
 const uart_rx = gpio.num(5);
 const reset_pin = gpio.num(15);
@@ -16,12 +16,15 @@ const reset_pin_config = rp2040.pins.GlobalConfiguration{
     .GPIO15 = .{
         .name = "reset",
         .direction = .out,
-        .pull = .down,
+        .pull = .up,
     },
 };
 
 pub fn init(buf: []u8) u8 {
     reset_pin_config.apply();
+    time.sleep_ms(100);
+    reset_pin.put(0);
+    time.sleep_ms(100);
     reset_pin.put(1);
     time.sleep_ms(100);
 
