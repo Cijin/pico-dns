@@ -45,30 +45,25 @@ pub fn main() !void {
         return;
     };
 
-    var buf: [128]u8 = .{0} ** 128;
+    var buf: [256]u8 = .{0} ** 256;
+    var temp_buf: [256]u8 = .{0} ** 256;
     const code = esp01s.init(&buf);
-    if (code != 0) {
-        const codeString = std.fmt.bufPrint(&buf, "{d}", .{code}) catch {
-            pins.led.put(1);
-            return;
-        };
-
-        write_line(codeString) catch {
-            pins.led.put(1);
-            return;
-        };
-
-        return;
-    }
-
-    var buf2: [128]u8 = .{0} ** 128;
-    const res = std.fmt.bufPrint(&buf2, "Res:{any}", .{buf}) catch {
+    const codeString = std.fmt.bufPrint(&temp_buf, "{d}", .{code}) catch {
         pins.led.put(1);
         return;
     };
-    write_line(res) catch {
+
+    write_line(codeString) catch {
         pins.led.put(1);
+        return;
     };
+
+    write_line(&buf) catch {
+        pins.led.put(1);
+        return;
+    };
+
+    return;
 }
 
 fn write_line(str: []const u8) !void {
