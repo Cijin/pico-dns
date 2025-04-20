@@ -18,6 +18,11 @@ const pin_config = rp2040.pins.GlobalConfiguration{
 const pins = pin_config.pins();
 const i2c0 = i2c.instance.num(0);
 
+// Todo:
+// * Use smaller font size for display
+// * Connect to Wifi
+// * How much can you monitor without connecting to the Wifi?
+// * Monitoring DNS lookup?
 pub fn main() !void {
     pin_config.apply();
     const sda_pin = gpio.num(0);

@@ -20,4 +20,5 @@ pub fn build(b: *std.Build) void {
     });
 
     mb.install_firmware(firmware, .{});
+    mb.install_firmware(firmware, .{ .format = .elf });
 }

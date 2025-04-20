@@ -12,6 +12,9 @@ const BAUD_RATE = 115200;
 const uart_tx = gpio.num(16);
 const uart_rx = gpio.num(17);
 
+// Todo:
+// * Methods to write commands
+// * Return only command response, without the command itself
 pub fn init(buf: []u8) u8 {
     inline for (&.{ uart_tx, uart_rx }) |pin| {
         pin.set_function(.uart);
